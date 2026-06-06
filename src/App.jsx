@@ -11,7 +11,8 @@ const NewPostForm = import.meta.env.DEV
   ? lazy(() => import('./components/dev/NewPostForm.jsx'))
   : null;
 
-// 경험·활동에 표시할 비프로젝트 분류(자격증은 프로필 고정값으로 별도 표기)
+// 경험·활동에 표시할 비프로젝트 분류(자격증은 프로필 고정값으로 별도 표기).
+// ⚠ '프로젝트'에도 이 목록에도 없는 category는 어디에도 렌더되지 않는다 — 분류 추가 시 함께 갱신.
 const EXPERIENCE_CATEGORIES = ['연구실', '대외활동', '동아리'];
 
 function App() {
@@ -34,6 +35,8 @@ function App() {
   }, []);
 
   useEffect(() => {
+    // async 래퍼는 의도적: 효과 본문에서 setState 함수를 직접 호출하지 않기 위함
+    // (react-hooks/set-state-in-effect 회피). 제거하면 lint 에러.
     async function load() {
       await refetchPosts();
     }
@@ -52,7 +55,7 @@ function App() {
 
   if (loading) {
     return (
-      <div className="state-screen">
+      <div className="state-screen" role="status" aria-live="polite">
         <p>프로젝트를 불러오는 중…</p>
       </div>
     );
@@ -60,7 +63,7 @@ function App() {
 
   if (error) {
     return (
-      <div className="state-screen">
+      <div className="state-screen" role="alert">
         <p className="state-screen__error">데이터를 불러오지 못했습니다.</p>
         <p className="state-screen__hint">
           잠시 후 새로고침하거나 Supabase 연결 설정을 확인해 주세요.

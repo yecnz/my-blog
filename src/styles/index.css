@@ -141,17 +141,21 @@ button { font-family: inherit; }
   border: 1px solid transparent;
   transition: transform 0.12s ease, box-shadow 0.12s ease, background 0.12s ease;
 }
-.btn:hover { transform: translateY(-1px); }
+/* hover와 동일한 어포던스를 키보드 포커스에도 부여 */
+.btn:hover,
+.btn:focus-visible { transform: translateY(-1px); }
 
 .btn--brand { background: var(--color-brand); color: #fff; }
-.btn--brand:hover { box-shadow: var(--shadow-sm); }
+.btn--brand:hover,
+.btn--brand:focus-visible { box-shadow: var(--shadow-sm); }
 
 .btn--outline {
   background: transparent;
   color: var(--color-brand);
   border-color: var(--color-brand);
 }
-.btn--outline:hover { background: var(--color-accent); }
+.btn--outline:hover,
+.btn--outline:focus-visible { background: var(--color-accent); }
 
 /* ---------- 경험·활동 (비프로젝트) ---------- */
 .experience { margin-bottom: var(--sp-8); }
@@ -366,9 +370,9 @@ button { font-family: inherit; }
   overflow: hidden;
 }
 
+/* 헤더는 스크롤되는 .detail__body 바깥의 flex 항목이라 항상 고정 노출됨
+   → position: sticky 불필요(무효 코드 제거). 닫기 버튼은 .detail(position:relative) 기준 절대배치. */
 .detail__head {
-  position: sticky;
-  top: 0;
   background: var(--color-surface);
   padding: var(--sp-6) var(--sp-6) var(--sp-3);
   border-bottom: 1px solid var(--color-line);

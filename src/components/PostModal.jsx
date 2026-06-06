@@ -8,6 +8,7 @@ import { categoryClass } from '../lib/categories.js';
 export default function PostModal({ post, onClose }) {
   const panelRef = useRef(null);
   const closeRef = useRef(null);
+  const mouseDownOnBackdrop = useRef(false);
 
   useEffect(() => {
     const previouslyFocused = document.activeElement;
@@ -64,8 +65,22 @@ export default function PostModal({ post, onClose }) {
   const legacy = (post.content || '').trim();
   const titleId = `detail-title-${post.id}`;
 
+  // 백드롭에서 시작하고 백드롭에서 끝난 포인터만 닫기로 처리(본문 텍스트 드래그 선택 중 닫힘 방지).
+  // 키보드 닫기는 ESC + 닫기 버튼이 담당하므로 백드롭은 포인터 보조 수단(role=presentation).
+  const handleBackdropMouseDown = (e) => {
+    mouseDownOnBackdrop.current = e.target === e.currentTarget;
+  };
+  const handleBackdropClick = (e) => {
+    if (e.target === e.currentTarget && mouseDownOnBackdrop.current) onClose();
+  };
+
   return (
-    <div className="detail-backdrop" onClick={onClose}>
+    <div
+      className="detail-backdrop"
+      role="presentation"
+      onMouseDown={handleBackdropMouseDown}
+      onClick={handleBackdropClick}
+    >
       <div
         ref={panelRef}
         className="detail"
@@ -73,7 +88,6 @@ export default function PostModal({ post, onClose }) {
         aria-modal="true"
         aria-labelledby={titleId}
         tabIndex={-1}
-        onClick={(e) => e.stopPropagation()}
       >
         <div className="detail__head">
           <div className="detail__meta">
