@@ -26,3 +26,9 @@ dist-ssr
 .env
 .env.*
 !.env.example
+# ⚠ .env.local 에 SUPABASE_SERVICE_ROLE_KEY 를 둡니다. 절대 커밋/배포 환경변수에 넣지 마세요.
+
+
+.CLAUDE.md
+.DESIGN.md
+.DESIGN_PLAN.md
