@@ -1,13 +1,4 @@
-# 송연지 | 프로젝트 포트폴리오 블로그
-
-> 프로젝트를 카드로 한눈에 보여주는 프론트엔드 포트폴리오.
-> Supabase(PostgreSQL)에서 데이터를 읽어 **프로젝트 카드 그리드**로 보여주고,
-> 카드를 클릭하면 **7섹션 상세**(소개·개요·진행한 일·과정·결과물·성장·역량)가 반응형으로 열립니다.
-
-상단에는 자격증·기술 스택·경험(인턴·대외활동·동아리)을, 아래에는 프로젝트를 카드로 정리했습니다.
-새 글은 **로컬 개발 환경에서만** 보이는 작성 폼으로 추가하며, 배포된 사이트는 **읽기 전용**입니다.
-
----
+# My blog
 
 ## 목차
 
@@ -84,7 +75,7 @@ my-blog/
 
 ### 1. 사전 준비
 - Node.js 18 이상
-- Supabase 프로젝트 1개 (무료 플랜으로 충분)
+- Supabase 프로젝트 1개
 
 ### 2. 설치
 ```bash
@@ -203,7 +194,6 @@ npm run lint     # ESLint
 
 - [DESIGN.md](./DESIGN.md) — 컬러·레이아웃·컴포넌트 디자인 시스템
 - [CLAUDE.md](./CLAUDE.md) — 스택·규칙·데이터 흐름·검증
-- [REDESIGN_PLAN.md](./REDESIGN_PLAN.md) — 달력형 → 카드형 전환 계획
 - [supabase/schema.sql](./supabase/schema.sql) · [migrations/0001](./supabase/migrations/0001_add_sections.sql)
 
 ---
