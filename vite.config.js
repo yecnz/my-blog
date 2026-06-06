@@ -38,6 +38,9 @@ function validateAndBuildRow(payload) {
   if (!summary?.trim()) errors.push('summary(한 줄 요약)는 필수입니다.')
   if (!activity_date) errors.push('activity_date(활동 시작일)는 필수입니다.')
   if (status && !STATUSES.includes(status)) errors.push(`status는 ${STATUSES.join('/')} 중 하나여야 합니다.`)
+  // 완료 프로젝트는 기간이 명확해야 함(상세의 단일 월 표기 방지). 단발성이면 시작=종료로.
+  const effectiveStatus = status || '완료'
+  if (effectiveStatus === '완료' && !end_date) errors.push('완료 프로젝트는 end_date(종료일)가 필요합니다.')
 
   const cleanSections = {}
   if (sections == null || typeof sections !== 'object' || Array.isArray(sections)) {

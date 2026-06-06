@@ -1,5 +1,5 @@
-import { lazy, Suspense, useCallback, useEffect, useState } from 'react';
-import { supabase } from './supabaseClient';
+import { lazy, Suspense, useCallback, useEffect, useMemo, useState } from 'react';
+import { fetchPosts } from './supabaseClient';
 import { profile } from './data/profile.js';
 import About from './components/About.jsx';
 import Experience from './components/Experience.jsx';
@@ -21,18 +21,16 @@ function App() {
   const [selectedPost, setSelectedPost] = useState(null);
 
   const refetchPosts = useCallback(async () => {
-    const { data, error } = await supabase
-      .from('posts')
-      .select('*')
-      .order('activity_date', { ascending: false });
-    if (error) {
-      console.error('데이터 로딩 에러:', error.message);
-      setError(error.message);
-    } else {
+    try {
+      const data = await fetchPosts();
       setPosts(data || []);
       setError(null);
+    } catch (err) {
+      console.error('데이터 로딩 에러:', err.message);
+      setError(err.message);
+    } finally {
+      setLoading(false);
     }
-    setLoading(false);
   }, []);
 
   useEffect(() => {
@@ -42,8 +40,11 @@ function App() {
     load();
   }, [refetchPosts]);
 
-  const projects = posts.filter((p) => p.category === '프로젝트');
-  const experiences = posts.filter((p) => EXPERIENCE_CATEGORIES.includes(p.category));
+  const projects = useMemo(() => posts.filter((p) => p.category === '프로젝트'), [posts]);
+  const experiences = useMemo(
+    () => posts.filter((p) => EXPERIENCE_CATEGORIES.includes(p.category)),
+    [posts]
+  );
   const currentYear = new Date().getFullYear();
 
   // 안정적인 핸들러: PostModal 효과가 부모 리렌더마다 재실행되지 않도록(포커스 보존)

@@ -10,7 +10,7 @@
   --color-ink: #4b2814;    /* 다크브라운 (텍스트) */
   --color-bg: #fffdf7;     /* 페이지 배경(옅은 크림) */
   --color-surface: #ffffff;
-  --color-muted: #9c8472;  /* 보조 텍스트 */
+  --color-muted: #7d6553;  /* 보조 텍스트 — WCAG AA(>4.5:1) 충족(흰/크림 배경) */
   --color-line: #ece3d6;   /* 보더 */
 
   /* 간격 */
@@ -227,6 +227,7 @@ button { font-family: inherit; }
 
 /* ---------- 프로젝트 카드 ---------- */
 .post-card {
+  position: relative; /* 제목 버튼의 ::after 오버레이 기준 */
   text-align: left;
   width: 100%;
   height: 100%;
@@ -234,16 +235,40 @@ button { font-family: inherit; }
   border: 1px solid var(--color-line);
   border-radius: var(--radius-card);
   padding: var(--sp-6);
-  cursor: pointer;
   display: flex;
   flex-direction: column;
   gap: var(--sp-3);
   transition: transform 0.14s ease, box-shadow 0.14s ease, border-color 0.14s ease;
 }
-.post-card:hover {
+/* hover + 키보드 포커스 동일 어포던스(:has 로 카드 전체에 포커스 링) */
+.post-card:hover,
+.post-card:has(.post-card__link:focus-visible) {
   transform: translateY(-4px);
   box-shadow: var(--shadow-md);
   border-color: var(--color-brand);
+}
+.post-card:has(.post-card__link:focus-visible) {
+  outline: 2px solid var(--color-brand);
+  outline-offset: 2px;
+}
+
+/* 제목 버튼: 버튼 기본 스타일 제거 + ::after 로 카드 전체를 클릭 영역으로 */
+.post-card__link {
+  appearance: none;
+  border: 0;
+  background: none;
+  padding: 0;
+  margin: 0;
+  font: inherit;
+  color: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+.post-card__link::after { content: ''; position: absolute; inset: 0; }
+/* :has() 지원 브라우저에서만 내부 아웃라인 제거(포커스 링은 카드에 표시).
+   미지원 브라우저는 버튼 기본 :focus-visible 아웃라인을 유지 → 키보드 포커스 항상 가시. */
+@supports selector(:has(*)) {
+  .post-card__link:focus-visible { outline: none; }
 }
 
 .post-card__top { display: flex; gap: var(--sp-2); flex-wrap: wrap; }
@@ -398,42 +423,8 @@ button { font-family: inherit; }
   white-space: pre-line; /* 줄바꿈 보존 */
 }
 
-/* ---------- 작성 폼 (DEV 전용) ---------- */
-.devform {
-  margin-top: var(--sp-12);
-  padding: var(--sp-6);
-  border: 1px dashed var(--color-brand);
-  border-radius: var(--radius-card);
-  background: var(--color-surface);
-}
-.devform__head { margin-bottom: var(--sp-4); }
-.devform__title { font-size: 18px; font-weight: 700; }
-.devform__hint { font-size: 13px; color: var(--color-muted); }
-.devform__grid {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: var(--sp-3);
-}
-.field { display: flex; flex-direction: column; gap: var(--sp-1); }
-.field--full { grid-column: 1 / -1; }
-.field__label { font-size: 13px; font-weight: 600; color: var(--color-ink); }
-.field__hint { font-size: 12px; color: var(--color-muted); }
-.field input,
-.field textarea,
-.field select {
-  font-family: inherit;
-  font-size: 14px;
-  color: var(--color-ink);
-  background: var(--color-bg);
-  border: 1px solid var(--color-line);
-  border-radius: var(--radius-btn);
-  padding: 8px 10px;
-}
-.field textarea { resize: vertical; min-height: 64px; }
-.devform__actions { display: flex; align-items: center; gap: var(--sp-3); margin-top: var(--sp-4); }
-.devform__msg { font-size: 13px; }
-.devform__msg--ok { color: var(--color-brand); }
-.devform__msg--err { color: #b3261e; }
+/* 작성 폼(DEV 전용) 스타일은 src/components/dev/devform.css 로 분리
+   → NewPostForm 과 함께 프로덕션 번들에서 제외된다. */
 
 /* ---------- 상태 화면 ---------- */
 .state-screen {
@@ -467,7 +458,6 @@ button { font-family: inherit; }
 @media (max-width: 600px) {
   .container { padding: var(--sp-8) var(--sp-4); }
   .project-grid { grid-template-columns: 1fr; }
-  .devform__grid { grid-template-columns: 1fr; }
 
   /* 모바일: 하단 풀스크린 시트 */
   .detail-backdrop { align-items: flex-end; padding: 0; }

@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { SECTION_SCHEMA, emptySections } from '../../lib/sections.js';
+import './devform.css';
 
 // DEV 전용 프로젝트 작성 폼. /api/posts(개발 서버 미들웨어)로 POST → service_role 저장.
 // 이 컴포넌트는 import.meta.env.DEV 가드로 개발에서만 로드된다(프로덕션 번들 제외).
@@ -21,6 +22,7 @@ export default function NewPostForm({ onCreated }) {
   const [msg, setMsg] = useState(null); // { ok: boolean, text: string }
 
   const ongoing = meta.status === '진행중';
+  const completed = meta.status === '완료';
 
   function setMetaField(key, value) {
     setMeta((m) => ({ ...m, [key]: value }));
@@ -103,14 +105,18 @@ export default function NewPostForm({ onCreated }) {
         </label>
 
         <label className="field">
-          <span className="field__label">종료일</span>
+          <span className="field__label">종료일{completed ? ' *' : ''}</span>
           <input
             type="date"
             value={ongoing ? '' : meta.end_date}
             onChange={(e) => setMetaField('end_date', e.target.value)}
             disabled={ongoing}
+            required={completed}
           />
           {ongoing && <span className="field__hint">진행중이면 종료일은 비웁니다.</span>}
+          {completed && (
+            <span className="field__hint">완료 프로젝트는 종료 월까지 입력하세요. (단발성이면 시작과 동일하게)</span>
+          )}
         </label>
 
         <label className="field">

@@ -1,4 +1,6 @@
-// 메인 그리드의 프로젝트 카드. 클릭하면 상세가 열린다. (메인은 전부 프로젝트라 카테고리 배지 없음)
+// 메인 그리드의 프로젝트 카드. 제목 버튼을 누르면 상세가 열린다.
+// 접근성: 카드는 <article>, 제목은 실제 <h3>로 두어 스크린리더 제목 탐색을 보존하고,
+// 클릭 대상은 제목 안의 <button>(::after 오버레이로 카드 전체가 클릭 영역). (메인은 전부 프로젝트라 카테고리 배지 없음)
 
 const MAX_TAGS = 3;
 
@@ -8,12 +10,7 @@ export default function PostCard({ post, onSelect }) {
   const restCount = tags.length - shownTags.length;
 
   return (
-    <button
-      type="button"
-      className="post-card"
-      onClick={() => onSelect(post)}
-      aria-label={`${post.title} 상세 보기`}
-    >
+    <article className="post-card">
       <div className="post-card__top">
         <span
           className={`badge ${post.status === '진행중' ? 'badge--ongoing' : 'badge--done'}`}
@@ -22,7 +19,15 @@ export default function PostCard({ post, onSelect }) {
         </span>
       </div>
 
-      <h3 className="post-card__title">{post.title}</h3>
+      <h3 className="post-card__title">
+        <button
+          type="button"
+          className="post-card__link"
+          onClick={() => onSelect(post)}
+        >
+          {post.title}
+        </button>
+      </h3>
       <p className="post-card__summary">{post.summary}</p>
 
       {shownTags.length > 0 && (
@@ -33,6 +38,6 @@ export default function PostCard({ post, onSelect }) {
           {restCount > 0 && <span className="chip chip--more">+{restCount}</span>}
         </div>
       )}
-    </button>
+    </article>
   );
 }
